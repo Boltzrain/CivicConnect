@@ -23,9 +23,20 @@ const Navbar = () => {
         <BSNavbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             {isAuthenticated && (
-              <Nav.Link as={Link} to="/dashboard">
-                Dashboard
-              </Nav.Link>
+              <>
+                <Nav.Link as={Link} to="/dashboard">
+                  <i className="bi bi-house-door me-1"></i>
+                  Home
+                </Nav.Link>
+                <Nav.Link as={Link} to="/new-complaint">
+                  <i className="bi bi-file-earmark-plus me-1"></i>
+                  New Complaint
+                </Nav.Link>
+                <Nav.Link as={Link} to="/complaint-history">
+                  <i className="bi bi-clock-history me-1"></i>
+                  Complaint History
+                </Nav.Link>
+              </>
             )}
           </Nav>
           

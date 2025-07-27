@@ -8,6 +8,8 @@ dotenv.config();
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
+const complaintRoutes = require('./routes/complaintRoutes');
+const departmentRoutes = require('./routes/departmentRoutes');
 
 const app = express();
 
@@ -26,6 +28,8 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/complaints', complaintRoutes);
+app.use('/api/departments', departmentRoutes);
 
 // Basic route
 app.get('/', (req, res) => {

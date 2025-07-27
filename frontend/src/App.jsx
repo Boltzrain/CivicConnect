@@ -5,6 +5,8 @@ import Navbar from './components/Navbar'
 import Login from './components/Login'
 import Register from './components/Register'
 import Dashboard from './components/Dashboard'
+import NewComplaint from './components/NewComplaint'
+import ComplaintHistory from './components/ComplaintHistory'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -21,6 +23,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/new-complaint" 
+              element={
+                <ProtectedRoute>
+                  <NewComplaint />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/complaint-history" 
+              element={
+                <ProtectedRoute>
+                  <ComplaintHistory />
                 </ProtectedRoute>
               } 
             />
