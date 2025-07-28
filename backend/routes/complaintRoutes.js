@@ -33,11 +33,7 @@ const complaintValidation = [
   body('description')
     .trim()
     .isLength({ min: 10, max: 1000 })
-    .withMessage('Description must be between 10 and 1000 characters'),
-  body('priority')
-    .optional()
-    .isIn(['Low', 'Medium', 'High', 'Urgent'])
-    .withMessage('Invalid priority level')
+    .withMessage('Description must be between 10 and 1000 characters')
 ];
 
 const statusValidation = [

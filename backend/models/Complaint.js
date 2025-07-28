@@ -42,11 +42,6 @@ const complaintSchema = new mongoose.Schema({
     enum: ['Filed', 'In Progress', 'Resolved', 'Closed'],
     default: 'Filed'
   },
-  priority: {
-    type: String,
-    enum: ['Low', 'Medium', 'High', 'Urgent'],
-    default: 'Medium'
-  },
   complaintLetter: {
     type: String, // Auto-generated formatted complaint text
     required: true

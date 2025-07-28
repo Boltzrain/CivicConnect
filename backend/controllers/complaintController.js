@@ -52,7 +52,6 @@ Email: ${userInfo.email}
 Issue Details:
 Location: ${complaint.location.address}, ${complaint.location.city} - ${complaint.location.pincode}
 Issue Type: ${complaint.issueType}
-Priority: ${complaint.priority}
 
 Description:
 ${complaint.description}
@@ -84,7 +83,7 @@ const createComplaint = async (req, res) => {
       });
     }
 
-    const { issueType, location, description, priority = 'Medium' } = req.body;
+    const { issueType, location, description } = req.body;
     const userId = req.user.id;
 
     // Get department information from database
@@ -108,15 +107,22 @@ const createComplaint = async (req, res) => {
       imageBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
     }
 
+    // Generate tracking ID
+    const generateTrackingId = () => {
+      const timestamp = Date.now().toString(36);
+      const randomStr = Math.random().toString(36).substring(2, 8);
+      return `CC-${timestamp.toUpperCase()}-${randomStr.toUpperCase()}`;
+    };
+
     // Create complaint object
     const complaintData = {
       user: userId,
       issueType,
       location,
       description,
-      priority,
       image: imageBase64,
-      department: departmentInfo
+      department: departmentInfo,
+      trackingId: generateTrackingId()
     };
 
     // Generate complaint letter
