@@ -15,7 +15,6 @@ A full-stack MERN (MongoDB, Express.js, React, Node.js) application that allows 
 - **Issue Type Selection**: Water, Electricity, Road, Sanitation, Street Lights, Garbage Collection, Public Transport, Parks, Noise Pollution, and more
 - **Location-based Routing**: Automatic department assignment based on city and issue type
 - **Image Upload**: Optional image attachment with complaints (up to 5MB)
-- **Priority Levels**: Low, Medium, High, and Urgent priority settings
 - **Auto-generated Tracking IDs**: Unique tracking identifiers for each complaint
 
 ### Communication Features
@@ -202,7 +201,6 @@ CivicConnect/
    - Choose your city from supported cities
    - Enter pincode and detailed address
    - Describe the issue in detail
-   - Set priority level
    - Upload an image (optional)
 3. **Submit**: Click "File Complaint" to generate the complaint letter
 4. **Send**: Use WhatsApp or Email buttons to send to the appropriate department

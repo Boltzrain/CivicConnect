@@ -40,7 +40,6 @@ export const complaintService = {
       formData.append('location[pincode]', complaintData.location.pincode)
       formData.append('location[address]', complaintData.location.address)
       formData.append('description', complaintData.description)
-      formData.append('priority', complaintData.priority || 'Medium')
       
       // Add image if provided
       if (complaintData.image) {

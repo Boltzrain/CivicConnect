@@ -7,12 +7,6 @@ import { complaintService } from '../services/complaintService'
 const Dashboard = () => {
   const { user } = useAuth()
   const [recentComplaints, setRecentComplaints] = useState([])
-  const [stats, setStats] = useState({
-    total: 0,
-    filed: 0,
-    inProgress: 0,
-    resolved: 0
-  })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -24,19 +18,6 @@ const Dashboard = () => {
     try {
       const response = await complaintService.getUserComplaints(1, 5)
       setRecentComplaints(response.complaints)
-      
-      // Calculate stats
-      const totalComplaints = response.pagination.total
-      const filed = response.complaints.filter(c => c.status === 'Filed').length
-      const inProgress = response.complaints.filter(c => c.status === 'In Progress').length
-      const resolved = response.complaints.filter(c => c.status === 'Resolved').length
-      
-      setStats({
-        total: totalComplaints,
-        filed,
-        inProgress,
-        resolved
-      })
     } catch (error) {
       console.error('Error loading dashboard data:', error)
       setError('Failed to load dashboard data')
@@ -64,40 +45,47 @@ const Dashboard = () => {
   }
 
   return (
-    <Container className="py-4">
+    <Container className="dashboard-container">
       {/* Welcome Section */}
-      <Row className="mb-4">
+      <Row className="mb-5">
         <Col>
-          <Card className="bg-primary text-white shadow">
-            <Card.Body className="text-center py-4">
-              <h1 className="display-5 fw-bold mb-3">Welcome to CivicConnect</h1>
-              <p className="lead mb-0">
-                Hello {user?.name}! File complaints with your municipal departments easily and track their progress.
-              </p>
-            </Card.Body>
-          </Card>
+          <div className="welcome-card fade-in-up">
+            <h1 className="display-4 fw-bold mb-3">
+              Welcome to CivicConnect ✨
+            </h1>
+            <p className="lead mb-0">
+              Hello <strong>{user?.name}</strong>! Your one-stop solution to file complaints with municipal departments and track their progress seamlessly.
+            </p>
+          </div>
         </Col>
       </Row>
 
       {/* Quick Actions */}
-      <Row className="mb-4">
+      <Row className="mb-5">
         <Col>
-          <h4 className="mb-3">Quick Actions</h4>
+          <div className="d-flex align-items-center mb-4">
+            <div className="bg-primary rounded-circle p-2 me-3">
+              <i className="bi bi-lightning-charge text-white"></i>
+            </div>
+            <h3 className="mb-0 fw-bold">Quick Actions</h3>
+          </div>
         </Col>
       </Row>
 
-      <Row className="mb-4">
-        <Col md={6} className="mb-3">
-          <Card className="h-100 shadow-sm border-0 hover-card">
+      <Row className="mb-5 g-4">
+        <Col md={6}>
+          <Card className="hover-card h-100 border-0 fade-in-up" style={{'--bs-animation-delay': '0.1s'}}>
             <Card.Body className="text-center p-4">
-              <div className="mb-3">
-                <i className="bi bi-file-earmark-plus display-4 text-primary"></i>
+              <div className="mb-4">
+                <div className="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style={{width: '80px', height: '80px'}}>
+                  <i className="bi bi-file-earmark-plus text-primary" style={{fontSize: '2rem'}}></i>
+                </div>
               </div>
-              <Card.Title className="h5">File New Complaint</Card.Title>
-              <Card.Text className="text-muted mb-3">
-                Report issues with water, electricity, roads, sanitation, and more to your municipal department.
+              <Card.Title className="h4 mb-3 fw-bold">File New Complaint</Card.Title>
+              <Card.Text className="text-muted mb-4 px-3">
+                Report issues with water supply, electricity, roads, sanitation, garbage collection, and more to your municipal department with ease.
               </Card.Text>
-              <Button as={Link} to="/new-complaint" variant="primary" size="lg" className="w-100">
+              <Button as={Link} to="/new-complaint" variant="primary" size="lg" className="px-4 py-2">
                 <i className="bi bi-plus-circle me-2"></i>
                 File Complaint
               </Button>
@@ -105,17 +93,19 @@ const Dashboard = () => {
           </Card>
         </Col>
 
-        <Col md={6} className="mb-3">
-          <Card className="h-100 shadow-sm border-0 hover-card">
+        <Col md={6}>
+          <Card className="hover-card h-100 border-0 fade-in-up" style={{'--bs-animation-delay': '0.2s'}}>
             <Card.Body className="text-center p-4">
-              <div className="mb-3">
-                <i className="bi bi-clock-history display-4 text-success"></i>
+              <div className="mb-4">
+                <div className="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style={{width: '80px', height: '80px'}}>
+                  <i className="bi bi-clock-history text-success" style={{fontSize: '2rem'}}></i>
+                </div>
               </div>
-              <Card.Title className="h5">View Complaint History</Card.Title>
-              <Card.Text className="text-muted mb-3">
-                Track the status of your filed complaints and resend them via WhatsApp or email.
+              <Card.Title className="h4 mb-3 fw-bold">View Complaint History</Card.Title>
+              <Card.Text className="text-muted mb-4 px-3">
+                Track the status of your filed complaints, view detailed reports, and resend them via WhatsApp or email.
               </Card.Text>
-              <Button as={Link} to="/complaint-history" variant="success" size="lg" className="w-100">
+              <Button as={Link} to="/complaint-history" variant="success" size="lg" className="px-4 py-2">
                 <i className="bi bi-list-ul me-2"></i>
                 View History
               </Button>
@@ -124,58 +114,18 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-      {/* Statistics */}
-      <Row className="mb-4">
-        <Col>
-          <h4 className="mb-3">Your Complaint Statistics</h4>
-        </Col>
-      </Row>
-
-      <Row className="mb-4">
-        <Col md={3} className="mb-3">
-          <Card className="text-center shadow-sm border-0">
-            <Card.Body>
-              <i className="bi bi-folder display-4 text-primary mb-2"></i>
-              <h3 className="text-primary mb-1">{stats.total}</h3>
-              <p className="text-muted mb-0">Total Complaints</p>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3} className="mb-3">
-          <Card className="text-center shadow-sm border-0">
-            <Card.Body>
-              <i className="bi bi-file-earmark display-4 text-info mb-2"></i>
-              <h3 className="text-info mb-1">{stats.filed}</h3>
-              <p className="text-muted mb-0">Filed</p>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3} className="mb-3">
-          <Card className="text-center shadow-sm border-0">
-            <Card.Body>
-              <i className="bi bi-hourglass-split display-4 text-warning mb-2"></i>
-              <h3 className="text-warning mb-1">{stats.inProgress}</h3>
-              <p className="text-muted mb-0">In Progress</p>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3} className="mb-3">
-          <Card className="text-center shadow-sm border-0">
-            <Card.Body>
-              <i className="bi bi-check-circle display-4 text-success mb-2"></i>
-              <h3 className="text-success mb-1">{stats.resolved}</h3>
-              <p className="text-muted mb-0">Resolved</p>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
       {/* Recent Complaints */}
       <Row className="mb-4">
         <Col>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h4 className="mb-0">Recent Complaints</h4>
-            <Button as={Link} to="/complaint-history" variant="outline-primary" size="sm">
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <div className="d-flex align-items-center">
+              <div className="bg-secondary rounded-circle p-2 me-3">
+                <i className="bi bi-clock-history text-white"></i>
+              </div>
+              <h3 className="mb-0 fw-bold">Recent Complaints</h3>
+            </div>
+            <Button as={Link} to="/complaint-history" variant="outline-primary" className="px-4">
+              <i className="bi bi-arrow-right me-2"></i>
               View All
             </Button>
           </div>
@@ -183,7 +133,8 @@ const Dashboard = () => {
       </Row>
 
       {error && (
-        <Alert variant="danger" dismissible onClose={() => setError('')}>
+        <Alert variant="danger" dismissible onClose={() => setError('')} className="fade-in-up">
+          <i className="bi bi-exclamation-triangle me-2"></i>
           {error}
         </Alert>
       )}
@@ -191,12 +142,13 @@ const Dashboard = () => {
       {loading ? (
         <Row>
           <Col>
-            <Card>
+            <Card className="border-0">
               <Card.Body className="text-center py-5">
-                <div className="spinner-border text-primary" role="status">
+                <div className="spinner-border text-primary mb-3" role="status" style={{width: '3rem', height: '3rem'}}>
                   <span className="visually-hidden">Loading...</span>
                 </div>
-                <p className="mt-3 text-muted">Loading your complaints...</p>
+                <h5 className="text-muted">Loading your complaints...</h5>
+                <p className="text-muted mb-0">Please wait while we fetch your data</p>
               </Card.Body>
             </Card>
           </Col>
@@ -204,12 +156,14 @@ const Dashboard = () => {
       ) : recentComplaints.length === 0 ? (
         <Row>
           <Col>
-            <Card className="border-0 shadow-sm">
-              <Card.Body className="text-center py-5">
-                <i className="bi bi-inbox display-1 text-muted mb-3"></i>
-                <h5 className="text-muted">No complaints filed yet</h5>
-                <p className="text-muted mb-3">Start by filing your first complaint to see it here.</p>
-                <Button as={Link} to="/new-complaint" variant="primary">
+            <Card className="border-0 text-center py-5 fade-in-up">
+              <Card.Body>
+                <div className="mb-4">
+                  <i className="bi bi-inbox display-1 text-muted opacity-50"></i>
+                </div>
+                <h4 className="text-muted mb-3">No complaints filed yet</h4>
+                <p className="text-muted mb-4 fs-5">Start by filing your first complaint to see it here and track its progress.</p>
+                <Button as={Link} to="/new-complaint" variant="primary" size="lg" className="px-4">
                   <i className="bi bi-plus-circle me-2"></i>
                   File Your First Complaint
                 </Button>
@@ -218,37 +172,59 @@ const Dashboard = () => {
           </Col>
         </Row>
       ) : (
-        recentComplaints.map((complaint) => (
-          <Row key={complaint._id} className="mb-3">
+        recentComplaints.map((complaint, index) => (
+          <Row key={complaint._id} className="mb-4">
             <Col>
-              <Card className="shadow-sm border-0">
-                <Card.Body>
+              <Card className="border-0 hover-card fade-in-up" style={{'--bs-animation-delay': `${index * 0.1}s`}}>
+                <Card.Body className="p-4">
                   <Row className="align-items-center">
                     <Col md={8}>
-                      <div className="d-flex align-items-center mb-2">
-                        <h6 className="mb-0 me-3">{complaint.issueType}</h6>
-                        <span className={`badge bg-${getStatusBadge(complaint.status)}`}>
+                      <div className="d-flex align-items-center mb-3">
+                        <h5 className="mb-0 me-3 fw-bold">{complaint.issueType}</h5>
+                        <span className={`badge bg-${getStatusBadge(complaint.status)} px-3 py-2`}>
                           {complaint.status}
                         </span>
                       </div>
-                      <p className="text-muted mb-1">
-                        <i className="bi bi-geo-alt me-1"></i>
-                        {complaint.location.city}
-                      </p>
-                      <p className="mb-0">
-                        {complaint.description.length > 100 
-                          ? `${complaint.description.substring(0, 100)}...` 
+                      <div className="mb-2">
+                        <i className="bi bi-geo-alt text-primary me-2"></i>
+                        <span className="text-muted fw-medium">
+                          {complaint.location.city}, {complaint.location.pincode}
+                        </span>
+                      </div>
+                      <p className="text-dark mb-3 lh-base">
+                        {complaint.description.length > 120 
+                          ? `${complaint.description.substring(0, 120)}...` 
                           : complaint.description}
                       </p>
+                      <div className="d-flex align-items-center text-muted small">
+                        <span className="me-4 d-flex align-items-center">
+                          <i className="bi bi-calendar3 me-1"></i>
+                          {formatDate(complaint.createdAt)}
+                        </span>
+                        <span className="me-4 d-flex align-items-center">
+                          <i className="bi bi-hash me-1"></i>
+                          <code className="bg-light px-2 py-1 rounded text-primary">
+                            {complaint.trackingId}
+                          </code>
+                        </span>
+                        <span className="d-flex align-items-center">
+                          <i className="bi bi-building me-1"></i>
+                          {complaint.department.name}
+                        </span>
+                      </div>
                     </Col>
                     <Col md={4} className="text-md-end">
-                      <div className="text-muted small mb-2">
-                        <i className="bi bi-calendar3 me-1"></i>
-                        {formatDate(complaint.createdAt)}
-                      </div>
-                      <div className="text-muted small">
-                        <i className="bi bi-hash me-1"></i>
-                        {complaint.trackingId}
+                      <div className="d-flex flex-column gap-2">
+                        <Button 
+                          as={Link} 
+                          to="/complaint-history" 
+                          variant="outline-primary" 
+                          size="sm"
+                          className="px-3"
+                        >
+                          <i className="bi bi-eye me-1"></i>
+                          View Details
+                        </Button>
                       </div>
                     </Col>
                   </Row>
@@ -262,13 +238,16 @@ const Dashboard = () => {
       {/* About Section */}
       <Row className="mt-5">
         <Col>
-          <Card className="bg-light border-0">
-            <Card.Body className="text-center py-4">
-              <h5 className="mb-3">About CivicConnect</h5>
-              <p className="text-muted mb-0">
-                CivicConnect makes it easy to file complaints with your municipal departments. 
-                Generate professional complaint letters and send them directly via WhatsApp or email 
-                to the appropriate department based on your city and issue type.
+          <Card className="bg-light border-0 fade-in-up">
+            <Card.Body className="text-center py-5">
+              <div className="mb-4">
+                <i className="bi bi-info-circle text-primary" style={{fontSize: '3rem'}}></i>
+              </div>
+              <h4 className="mb-4 fw-bold">About CivicConnect</h4>
+              <p className="text-muted mb-0 fs-5 lh-lg px-md-5">
+                CivicConnect streamlines the process of filing complaints with municipal departments. 
+                Generate professional complaint letters, send them directly via WhatsApp or email, 
+                and track their progress - all from one convenient platform designed for Indian citizens.
               </p>
             </Card.Body>
           </Card>

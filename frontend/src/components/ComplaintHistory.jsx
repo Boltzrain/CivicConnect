@@ -38,17 +38,7 @@ const ComplaintHistory = () => {
       'Resolved': 'success',
       'Closed': 'secondary'
     }
-    return <Badge bg={statusMap[status] || 'secondary'}>{status}</Badge>
-  }
-
-  const getPriorityBadge = (priority) => {
-    const priorityMap = {
-      'Low': 'success',
-      'Medium': 'warning',
-      'High': 'danger',
-      'Urgent': 'danger'
-    }
-    return <Badge bg={priorityMap[priority] || 'secondary'}>{priority}</Badge>
+    return <Badge bg={statusMap[status] || 'secondary'} className="px-3 py-2">{status}</Badge>
   }
 
   const handleSendWhatsApp = async (complaint) => {
@@ -116,7 +106,7 @@ const ComplaintHistory = () => {
   }
 
   const handleDeleteComplaint = async (complaintId) => {
-    if (window.confirm('Are you sure you want to delete this complaint?')) {
+    if (window.confirm('Are you sure you want to delete this complaint? This action cannot be undone.')) {
       try {
         await complaintService.deleteComplaint(complaintId)
         setComplaints(prev => prev.filter(c => c._id !== complaintId))
@@ -140,13 +130,14 @@ const ComplaintHistory = () => {
 
   const getSentViaInfo = (sentVia) => {
     if (!sentVia || sentVia.length === 0) {
-      return <span className="text-muted">Not sent</span>
+      return <span className="text-muted small">Not sent yet</span>
     }
 
     return (
-      <div>
+      <div className="d-flex flex-wrap gap-1">
         {sentVia.map((item, index) => (
-          <Badge key={index} bg={item.method === 'WhatsApp' ? 'success' : 'primary'} className="me-1">
+          <Badge key={index} bg={item.method === 'WhatsApp' ? 'success' : 'primary'} className="small">
+            <i className={`bi bi-${item.method === 'WhatsApp' ? 'whatsapp' : 'envelope'} me-1`}></i>
             {item.method}
           </Badge>
         ))}
@@ -156,280 +147,337 @@ const ComplaintHistory = () => {
 
   return (
     <Container className="py-4">
-      <Row>
+      <Row className="mb-4">
         <Col>
-          <Card className="shadow">
-            <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center">
-              <h4 className="mb-0">
-                <i className="bi bi-clock-history me-2"></i>
-                Complaint History
-              </h4>
+          <div className="d-flex align-items-center mb-4">
+            <div className="bg-primary rounded-circle p-3 me-3">
+              <i className="bi bi-clock-history text-white fs-4"></i>
+            </div>
+            <div>
+              <h2 className="mb-0 fw-bold">Complaint History</h2>
+              <p className="text-muted mb-0">Track and manage all your filed complaints</p>
+            </div>
+            <div className="ms-auto">
               <Button
-                variant="outline-light"
-                size="sm"
+                variant="outline-primary"
                 onClick={() => loadComplaints(currentPage)}
                 disabled={loading}
+                className="px-4"
               >
-                <i className="bi bi-arrow-clockwise me-1"></i>
+                <i className="bi bi-arrow-clockwise me-2"></i>
                 Refresh
               </Button>
-            </Card.Header>
-            <Card.Body>
-              {error && (
-                <Alert variant="danger" dismissible onClose={() => setError('')}>
-                  {error}
-                </Alert>
-              )}
-              
-              {success && (
-                <Alert variant="success" dismissible onClose={() => setSuccess('')}>
-                  {success}
-                </Alert>
-              )}
+            </div>
+          </div>
+        </Col>
+      </Row>
 
-              {loading ? (
-                <div className="text-center py-4">
-                  <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </Spinner>
-                  <p className="mt-2">Loading complaints...</p>
-                </div>
-              ) : complaints.length === 0 ? (
-                <div className="text-center py-5">
-                  <i className="bi bi-inbox display-1 text-muted"></i>
-                  <h5 className="text-muted mt-3">No complaints found</h5>
-                  <p className="text-muted">You haven't filed any complaints yet.</p>
-                </div>
-              ) : (
-                <>
-                  {complaints.map((complaint) => (
-                    <Card key={complaint._id} className="mb-3 border">
-                      <Card.Body>
-                        <Row className="align-items-center">
-                          <Col md={8}>
-                            <div className="d-flex align-items-center mb-2">
-                              <h5 className="mb-0 me-3">{complaint.issueType}</h5>
-                              {getStatusBadge(complaint.status)}
-                              <span className="ms-2">{getPriorityBadge(complaint.priority)}</span>
-                            </div>
-                            
-                            <p className="text-muted mb-1">
-                              <i className="bi bi-geo-alt me-1"></i>
-                              {complaint.location.address}, {complaint.location.city} - {complaint.location.pincode}
-                            </p>
-                            
-                            <p className="mb-2">
-                              {complaint.description.length > 100 
-                                ? `${complaint.description.substring(0, 100)}...` 
-                                : complaint.description}
-                            </p>
-                            
-                            <div className="d-flex align-items-center text-muted small">
-                              <span className="me-3">
-                                <i className="bi bi-calendar3 me-1"></i>
-                                {formatDate(complaint.createdAt)}
-                              </span>
-                              <span className="me-3">
-                                <i className="bi bi-hash me-1"></i>
-                                {complaint.trackingId}
-                              </span>
-                              <span>
-                                <i className="bi bi-building me-1"></i>
-                                {complaint.department.name}
-                              </span>
-                            </div>
-                            
-                            <div className="mt-2">
-                              <strong className="small">Sent via:</strong>
-                              <span className="ms-2">{getSentViaInfo(complaint.sentVia)}</span>
-                            </div>
-                          </Col>
-                          
-                          <Col md={4}>
-                            <div className="d-grid gap-2">
-                              <ButtonGroup size="sm">
-                                <Button
-                                  variant="outline-primary"
-                                  onClick={() => handleViewDetails(complaint)}
-                                >
-                                  <i className="bi bi-eye me-1"></i>
-                                  Details
-                                </Button>
-                                <Button
-                                  variant="outline-secondary"
-                                  onClick={() => handleViewComplaintLetter(complaint)}
-                                >
-                                  <i className="bi bi-file-text me-1"></i>
-                                  Letter
-                                </Button>
-                              </ButtonGroup>
-                              
-                              <ButtonGroup size="sm">
-                                <Button
-                                  variant="success"
-                                  onClick={() => handleSendWhatsApp(complaint)}
-                                >
-                                  <i className="bi bi-whatsapp me-1"></i>
-                                  WhatsApp
-                                </Button>
-                                <Button
-                                  variant="primary"
-                                  onClick={() => handleSendEmail(complaint)}
-                                >
-                                  <i className="bi bi-envelope me-1"></i>
-                                  Email
-                                </Button>
-                              </ButtonGroup>
-                              
-                              <Button
-                                variant="outline-danger"
-                                size="sm"
-                                onClick={() => handleDeleteComplaint(complaint._id)}
-                              >
-                                <i className="bi bi-trash me-1"></i>
-                                Delete
-                              </Button>
-                            </div>
-                          </Col>
-                        </Row>
-                      </Card.Body>
-                    </Card>
-                  ))}
+      <Row>
+        <Col>
+          {error && (
+            <Alert variant="danger" dismissible onClose={() => setError('')} className="fade-in-up mb-4">
+              <i className="bi bi-exclamation-triangle me-2"></i>
+              {error}
+            </Alert>
+          )}
+          
+          {success && (
+            <Alert variant="success" dismissible onClose={() => setSuccess('')} className="fade-in-up mb-4">
+              <i className="bi bi-check-circle me-2"></i>
+              {success}
+            </Alert>
+          )}
 
-                  {/* Pagination */}
-                  {pagination.pages > 1 && (
-                    <Row className="mt-4">
-                      <Col className="d-flex justify-content-center">
-                        <Pagination>
-                          <Pagination.Prev 
-                            disabled={currentPage === 1}
-                            onClick={() => setCurrentPage(currentPage - 1)}
-                          />
-                          {[...Array(pagination.pages)].map((_, index) => (
-                            <Pagination.Item
-                              key={index + 1}
-                              active={index + 1 === currentPage}
-                              onClick={() => setCurrentPage(index + 1)}
+          {loading ? (
+            <Card className="border-0">
+              <Card.Body className="text-center py-5">
+                <div className="spinner-border text-primary mb-3" role="status" style={{width: '3rem', height: '3rem'}}>
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+                <h5 className="text-muted">Loading your complaints...</h5>
+                <p className="text-muted mb-0">Please wait while we fetch your complaint history</p>
+              </Card.Body>
+            </Card>
+          ) : complaints.length === 0 ? (
+            <Card className="border-0 text-center py-5 fade-in-up">
+              <Card.Body>
+                <div className="mb-4">
+                  <i className="bi bi-inbox display-1 text-muted opacity-50"></i>
+                </div>
+                <h4 className="text-muted mb-3">No complaints found</h4>
+                <p className="text-muted mb-4 fs-5">You haven't filed any complaints yet. Start by filing your first complaint.</p>
+                <Button href="/new-complaint" variant="primary" size="lg" className="px-4">
+                  <i className="bi bi-plus-circle me-2"></i>
+                  File Your First Complaint
+                </Button>
+              </Card.Body>
+            </Card>
+          ) : (
+            <>
+              <div className="mb-4">
+                <div className="d-flex align-items-center justify-content-between mb-3">
+                  <span className="text-muted">
+                    Showing {complaints.length} of {pagination.total} complaints
+                  </span>
+                  <small className="text-muted">
+                    Page {currentPage} of {pagination.pages}
+                  </small>
+                </div>
+              </div>
+
+              {complaints.map((complaint, index) => (
+                <Card key={complaint._id} className="mb-4 border-0 hover-card fade-in-up" style={{'--bs-animation-delay': `${index * 0.1}s`}}>
+                  <Card.Body className="p-4">
+                    <Row className="align-items-center">
+                      <Col lg={8}>
+                        <div className="d-flex align-items-center mb-3">
+                          <h5 className="mb-0 me-3 fw-bold">{complaint.issueType}</h5>
+                          {getStatusBadge(complaint.status)}
+                        </div>
+                        
+                        <div className="mb-2">
+                          <i className="bi bi-geo-alt text-primary me-2"></i>
+                          <span className="text-muted fw-medium">
+                            {complaint.location.address}, {complaint.location.city} - {complaint.location.pincode}
+                          </span>
+                        </div>
+                        
+                        <p className="text-dark mb-3 lh-base">
+                          {complaint.description.length > 120 
+                            ? `${complaint.description.substring(0, 120)}...` 
+                            : complaint.description}
+                        </p>
+                        
+                        <div className="row g-3 align-items-center text-muted small mb-3">
+                          <div className="col-auto">
+                            <i className="bi bi-calendar3 me-1"></i>
+                            {formatDate(complaint.createdAt)}
+                          </div>
+                          <div className="col-auto">
+                            <i className="bi bi-hash me-1"></i>
+                            <code className="bg-light px-2 py-1 rounded text-primary">
+                              {complaint.trackingId}
+                            </code>
+                          </div>
+                          <div className="col-auto">
+                            <i className="bi bi-building me-1"></i>
+                            {complaint.department.name}
+                          </div>
+                        </div>
+                        
+                        <div className="d-flex align-items-center">
+                          <span className="text-muted small me-2 fw-semibold">Sent via:</span>
+                          {getSentViaInfo(complaint.sentVia)}
+                        </div>
+                      </Col>
+                      
+                      <Col lg={4}>
+                        <div className="d-flex flex-column gap-2">
+                          <div className="d-flex gap-2">
+                            <Button
+                              variant="outline-primary"
+                              size="sm"
+                              onClick={() => handleViewDetails(complaint)}
+                              className="flex-fill"
                             >
-                              {index + 1}
-                            </Pagination.Item>
-                          ))}
-                          <Pagination.Next 
-                            disabled={currentPage === pagination.pages}
-                            onClick={() => setCurrentPage(currentPage + 1)}
-                          />
-                        </Pagination>
+                              <i className="bi bi-eye me-1"></i>
+                              Details
+                            </Button>
+                            <Button
+                              variant="outline-secondary"
+                              size="sm"  
+                              onClick={() => handleViewComplaintLetter(complaint)}
+                              className="flex-fill"
+                            >
+                              <i className="bi bi-file-text me-1"></i>
+                              Letter
+                            </Button>
+                          </div>
+                          
+                          <div className="d-flex gap-2">
+                            <Button
+                              variant="success"
+                              size="sm"
+                              onClick={() => handleSendWhatsApp(complaint)}
+                              className="flex-fill"
+                            >
+                              <i className="bi bi-whatsapp me-1"></i>
+                              WhatsApp
+                            </Button>
+                            <Button
+                              variant="primary"
+                              size="sm"
+                              onClick={() => handleSendEmail(complaint)}
+                              className="flex-fill"
+                            >
+                              <i className="bi bi-envelope me-1"></i>
+                              Email
+                            </Button>
+                          </div>
+                          
+                          <Button
+                            variant="outline-danger"
+                            size="sm"
+                            onClick={() => handleDeleteComplaint(complaint._id)}
+                          >
+                            <i className="bi bi-trash me-1"></i>
+                            Delete
+                          </Button>
+                        </div>
                       </Col>
                     </Row>
-                  )}
-                </>
+                  </Card.Body>
+                </Card>
+              ))}
+
+              {/* Pagination */}
+              {pagination.pages > 1 && (
+                <div className="d-flex justify-content-center mt-5">
+                  <Pagination size="lg">
+                    <Pagination.Prev 
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                    />
+                    {[...Array(pagination.pages)].map((_, index) => (
+                      <Pagination.Item
+                        key={index + 1}
+                        active={index + 1 === currentPage}
+                        onClick={() => setCurrentPage(index + 1)}
+                      >
+                        {index + 1}
+                      </Pagination.Item>
+                    ))}
+                    <Pagination.Next 
+                      disabled={currentPage === pagination.pages}
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                    />
+                  </Pagination>
+                </div>
               )}
-            </Card.Body>
-          </Card>
+            </>
+          )}
         </Col>
       </Row>
 
       {/* Complaint Details Modal */}
-      <Modal show={showDetailModal} onHide={() => setShowDetailModal(false)} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>
+      <Modal show={showDetailModal} onHide={() => setShowDetailModal(false)} size="lg" centered>
+        <Modal.Header closeButton className="border-0">
+          <Modal.Title className="d-flex align-items-center">
             <i className="bi bi-info-circle me-2"></i>
             Complaint Details
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="p-4">
           {selectedComplaint && (
-            <Row>
+            <Row className="g-4">
               <Col md={6}>
-                <div className="mb-3">
-                  <strong>Tracking ID:</strong>
-                  <span className="ms-2 badge bg-primary">{selectedComplaint.trackingId}</span>
-                </div>
-                <div className="mb-3">
-                  <strong>Issue Type:</strong>
-                  <span className="ms-2">{selectedComplaint.issueType}</span>
-                </div>
-                <div className="mb-3">
-                  <strong>Priority:</strong>
-                  <span className="ms-2">{getPriorityBadge(selectedComplaint.priority)}</span>
-                </div>
-                <div className="mb-3">
-                  <strong>Status:</strong>
-                  <span className="ms-2">{getStatusBadge(selectedComplaint.status)}</span>
-                </div>
-                <div className="mb-3">
-                  <strong>Filed on:</strong>
-                  <span className="ms-2">{formatDate(selectedComplaint.createdAt)}</span>
-                </div>
+                <Card className="bg-light border-0 h-100">
+                  <Card.Body>
+                    <h6 className="text-primary mb-3 fw-bold">Basic Information</h6>
+                    <div className="mb-3">
+                      <strong className="d-block text-muted small mb-1">Tracking ID</strong>
+                      <code className="bg-white px-2 py-1 rounded text-primary">
+                        {selectedComplaint.trackingId}
+                      </code>
+                    </div>
+                    <div className="mb-3">
+                      <strong className="d-block text-muted small mb-1">Issue Type</strong>
+                      <span>{selectedComplaint.issueType}</span>
+                    </div>
+                    <div className="mb-3">
+                      <strong className="d-block text-muted small mb-1">Status</strong>
+                      {getStatusBadge(selectedComplaint.status)}
+                    </div>
+                    <div className="mb-0">
+                      <strong className="d-block text-muted small mb-1">Filed on</strong>
+                      <span>{formatDate(selectedComplaint.createdAt)}</span>
+                    </div>
+                  </Card.Body>
+                </Card>
               </Col>
               <Col md={6}>
-                <div className="mb-3">
-                  <strong>City:</strong>
-                  <span className="ms-2">{selectedComplaint.location.city}</span>
-                </div>
-                <div className="mb-3">
-                  <strong>Pincode:</strong>
-                  <span className="ms-2">{selectedComplaint.location.pincode}</span>
-                </div>
-                <div className="mb-3">
-                  <strong>Address:</strong>
-                  <span className="ms-2">{selectedComplaint.location.address}</span>
-                </div>
-                <div className="mb-3">
-                  <strong>Department:</strong>
-                  <span className="ms-2">{selectedComplaint.department.name}</span>
-                </div>
+                <Card className="bg-light border-0 h-100">
+                  <Card.Body>
+                    <h6 className="text-primary mb-3 fw-bold">Location & Department</h6>
+                    <div className="mb-3">
+                      <strong className="d-block text-muted small mb-1">City</strong>
+                      <span>{selectedComplaint.location.city}</span>
+                    </div>
+                    <div className="mb-3">
+                      <strong className="d-block text-muted small mb-1">Pincode</strong>
+                      <span>{selectedComplaint.location.pincode}</span>
+                    </div>
+                    <div className="mb-3">
+                      <strong className="d-block text-muted small mb-1">Address</strong>
+                      <span>{selectedComplaint.location.address}</span>
+                    </div>
+                    <div className="mb-0">
+                      <strong className="d-block text-muted small mb-1">Department</strong>
+                      <span>{selectedComplaint.department.name}</span>
+                    </div>
+                  </Card.Body>
+                </Card>
               </Col>
               <Col xs={12}>
-                <div className="mb-3">
-                  <strong>Description:</strong>
-                  <p className="mt-2 p-3 bg-light rounded">{selectedComplaint.description}</p>
-                </div>
-                {selectedComplaint.image && (
-                  <div className="mb-3">
-                    <strong>Image:</strong>
-                    <div className="mt-2">
-                      <img
-                        src={selectedComplaint.image}
-                        alt="Complaint"
-                        className="img-fluid rounded"
-                        style={{ maxHeight: '300px' }}
-                      />
+                <Card className="border-0">
+                  <Card.Body>
+                    <h6 className="text-primary mb-3 fw-bold">Description</h6>
+                    <div className="bg-light p-3 rounded">
+                      <p className="mb-0 lh-lg">{selectedComplaint.description}</p>
                     </div>
-                  </div>
+                  </Card.Body>
+                </Card>
+                {selectedComplaint.image && (
+                  <Card className="border-0 mt-3">
+                    <Card.Body>
+                      <h6 className="text-primary mb-3 fw-bold">Attached Image</h6>
+                      <div className="text-center">
+                        <img
+                          src={selectedComplaint.image}
+                          alt="Complaint"
+                          className="img-fluid rounded shadow-sm"
+                          style={{ maxHeight: '400px' }}
+                        />
+                      </div>
+                    </Card.Body>
+                  </Card>
                 )}
               </Col>
             </Row>
           )}
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className="border-0">
           <Button variant="secondary" onClick={() => setShowDetailModal(false)}>
+            <i className="bi bi-x-circle me-2"></i>
             Close
           </Button>
         </Modal.Footer>
       </Modal>
 
       {/* Complaint Letter Modal */}
-      <Modal show={showComplaintLetter} onHide={() => setShowComplaintLetter(false)} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>
+      <Modal show={showComplaintLetter} onHide={() => setShowComplaintLetter(false)} size="lg" centered>
+        <Modal.Header closeButton className="border-0">
+          <Modal.Title className="d-flex align-items-center">
             <i className="bi bi-file-text me-2"></i>
             Complaint Letter
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="p-4">
           {selectedComplaint && (
-            <Card>
+            <Card className="border-0 bg-light">
               <Card.Body>
-                <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem' }}>
-                  {selectedComplaint.complaintLetter}
-                </pre>
+                <div className="bg-white p-4 rounded">
+                  <pre className="mb-0" style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem', lineHeight: '1.8' }}>
+                    {selectedComplaint.complaintLetter}
+                  </pre>
+                </div>
               </Card.Body>
             </Card>
           )}
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className="border-0">
           <Button variant="secondary" onClick={() => setShowComplaintLetter(false)}>
+            <i className="bi bi-x-circle me-2"></i>
             Close
           </Button>
           {selectedComplaint && (
@@ -438,14 +486,14 @@ const ComplaintHistory = () => {
                 variant="success"
                 onClick={() => handleSendWhatsApp(selectedComplaint)}
               >
-                <i className="bi bi-whatsapp me-1"></i>
+                <i className="bi bi-whatsapp me-2"></i>
                 Send via WhatsApp
               </Button>
               <Button
                 variant="primary"
                 onClick={() => handleSendEmail(selectedComplaint)}
               >
-                <i className="bi bi-envelope me-1"></i>
+                <i className="bi bi-envelope me-2"></i>
                 Send via Email
               </Button>
             </>

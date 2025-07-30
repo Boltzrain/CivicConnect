@@ -11,7 +11,6 @@ const Register = () => {
     confirmPassword: ''
   })
   const [validated, setValidated] = useState(false)
-  const [passwordMatch, setPasswordMatch] = useState(true)
   
   const { register, loading, error, clearError, isAuthenticated } = useAuth()
   const navigate = useNavigate()
@@ -33,13 +32,6 @@ const Register = () => {
       [name]: value
     }))
     
-    // Check password match in real-time
-    if (name === 'confirmPassword' || name === 'password') {
-      const password = name === 'password' ? value : formData.password
-      const confirmPassword = name === 'confirmPassword' ? value : formData.confirmPassword
-      setPasswordMatch(password === confirmPassword)
-    }
-    
     // Clear validation when user starts typing
     if (validated) {
       setValidated(false)
@@ -51,8 +43,13 @@ const Register = () => {
     e.preventDefault()
     const form = e.currentTarget
     
-    if (form.checkValidity() === false || !passwordMatch) {
+    if (form.checkValidity() === false) {
       e.stopPropagation()
+      setValidated(true)
+      return
+    }
+
+    if (formData.password !== formData.confirmPassword) {
       setValidated(true)
       return
     }
@@ -70,96 +67,113 @@ const Register = () => {
     <div className="auth-container">
       <Container>
         <Row className="justify-content-center">
-          <Col md={6} lg={5}>
+          <Col md={6} lg={5} xl={4}>
             <Card className="auth-card">
               <div className="auth-header">
-                <h2 className="mb-0">Create Account</h2>
-                <p className="mb-0 mt-2">Join CivicConnect today</p>
+                <div className="mb-3">
+                  <i className="bi bi-person-plus-fill" style={{fontSize: '3rem'}}></i>
+                </div>
+                <h2 className="mb-2 fw-bold">Join CivicConnect ✨</h2>
+                <p className="mb-0 opacity-90">Create your account to get started</p>
               </div>
               <Card.Body className="auth-body">
                 {error && (
-                  <Alert variant="danger" className="mb-3">
+                  <Alert variant="danger" className="mb-4 fade-in-up">
+                    <i className="bi bi-exclamation-triangle me-2"></i>
                     {error}
                   </Alert>
                 )}
                 
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Full Name</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      minLength={2}
-                      maxLength={50}
-                      placeholder="Enter your full name"
-                      size="lg"
-                    />
+                    <Form.Label className="fw-semibold">Full Name</Form.Label>
+                    <div className="position-relative">
+                      <Form.Control
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter your full name"
+                        size="lg"
+                        className="ps-5"
+                      />
+                      <i className="bi bi-person position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                    </div>
                     <Form.Control.Feedback type="invalid">
-                      Name must be between 2 and 50 characters.
+                      Please provide your full name.
                     </Form.Control.Feedback>
                   </Form.Group>
 
                   <Form.Group className="mb-3">
-                    <Form.Label>Email Address</Form.Label>
-                    <Form.Control
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      placeholder="Enter your email"
-                      size="lg"
-                    />
+                    <Form.Label className="fw-semibold">Email Address</Form.Label>
+                    <div className="position-relative">
+                      <Form.Control
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter your email address"
+                        size="lg"
+                        className="ps-5"
+                      />
+                      <i className="bi bi-envelope position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                    </div>
                     <Form.Control.Feedback type="invalid">
                       Please provide a valid email address.
                     </Form.Control.Feedback>
                   </Form.Group>
 
                   <Form.Group className="mb-3">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                      type="password"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      required
-                      minLength={6}
-                      pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$"
-                      placeholder="Enter your password"
-                      size="lg"
-                    />
+                    <Form.Label className="fw-semibold">Password</Form.Label>
+                    <div className="position-relative">
+                      <Form.Control
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                        minLength={6}
+                        placeholder="Create a password"
+                        size="lg"
+                        className="ps-5"
+                      />
+                      <i className="bi bi-lock position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                    </div>
                     <Form.Control.Feedback type="invalid">
-                      Password must be at least 6 characters with uppercase, lowercase, and number.
+                      Password must be at least 6 characters long.
                     </Form.Control.Feedback>
-                    <Form.Text className="text-muted">
-                      Must contain at least one uppercase letter, lowercase letter, and number.
-                    </Form.Text>
                   </Form.Group>
 
                   <Form.Group className="mb-4">
-                    <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control
-                      type="password"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      required
-                      placeholder="Confirm your password"
-                      size="lg"
-                      isInvalid={validated && !passwordMatch}
-                    />
+                    <Form.Label className="fw-semibold">Confirm Password</Form.Label>
+                    <div className="position-relative">
+                      <Form.Control
+                        type="password"
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        required
+                        minLength={6}
+                        placeholder="Confirm your password"
+                        size="lg"
+                        className="ps-5"
+                        isInvalid={validated && formData.password !== formData.confirmPassword}
+                      />
+                      <i className="bi bi-lock-fill position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                    </div>
                     <Form.Control.Feedback type="invalid">
-                      Passwords do not match.
+                      {formData.password !== formData.confirmPassword 
+                        ? "Passwords don't match." 
+                        : "Please confirm your password."}
                     </Form.Control.Feedback>
                   </Form.Group>
 
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-100 mb-3"
+                    className="w-100 mb-4 py-3"
                     disabled={loading}
                   >
                     {loading ? (
@@ -172,18 +186,21 @@ const Register = () => {
                           aria-hidden="true"
                           className="me-2"
                         />
-                        Creating Account...
+                        Creating account...
                       </>
                     ) : (
-                      'Create Account'
+                      <>
+                        <i className="bi bi-person-plus me-2"></i>
+                        Create Account
+                      </>
                     )}
                   </Button>
                 </Form>
 
                 <div className="text-center">
-                  <p className="mb-0">
+                  <p className="mb-0 text-muted">
                     Already have an account?{' '}
-                    <Link to="/login" className="text-decoration-none">
+                    <Link to="/login" className="text-decoration-none fw-semibold">
                       Sign in here
                     </Link>
                   </p>
