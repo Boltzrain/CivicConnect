@@ -70,8 +70,8 @@ const Register = () => {
           <Col md={6} lg={5} xl={4}>
             <Card className="auth-card">
               <div className="auth-header">
-                <div className="mb-3">
-                  <i className="bi bi-person-plus-fill" style={{fontSize: '3rem'}}></i>
+                <div className="mb-2">
+                  <i className="bi bi-person-plus-fill" style={{fontSize: '2.5rem'}}></i>
                 </div>
                 <h2 className="mb-2 fw-bold">Join CivicConnect ✨</h2>
                 <p className="mb-0 opacity-90">Create your account to get started</p>
@@ -95,7 +95,7 @@ const Register = () => {
                         onChange={handleChange}
                         required
                         placeholder="Enter your full name"
-                        size="lg"
+
                         className="ps-5"
                       />
                       <i className="bi bi-person position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
@@ -115,7 +115,7 @@ const Register = () => {
                         onChange={handleChange}
                         required
                         placeholder="Enter your email address"
-                        size="lg"
+
                         className="ps-5"
                       />
                       <i className="bi bi-envelope position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
@@ -136,7 +136,7 @@ const Register = () => {
                         required
                         minLength={6}
                         placeholder="Create a password"
-                        size="lg"
+
                         className="ps-5"
                       />
                       <i className="bi bi-lock position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
@@ -146,7 +146,7 @@ const Register = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
 
-                  <Form.Group className="mb-4">
+                  <Form.Group className="mb-3">
                     <Form.Label className="fw-semibold">Confirm Password</Form.Label>
                     <div className="position-relative">
                       <Form.Control
@@ -157,7 +157,7 @@ const Register = () => {
                         required
                         minLength={6}
                         placeholder="Confirm your password"
-                        size="lg"
+
                         className="ps-5"
                         isInvalid={validated && formData.password !== formData.confirmPassword}
                       />
@@ -172,8 +172,8 @@ const Register = () => {
 
                   <Button
                     type="submit"
-                    size="lg"
-                    className="w-100 mb-4 py-3"
+
+                    className="w-100 mb-3 py-2"
                     disabled={loading}
                   >
                     {loading ? (

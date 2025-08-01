@@ -75,40 +75,44 @@ const Dashboard = () => {
       <Row className="mb-5 g-4">
         <Col md={6}>
           <Card className="hover-card h-100 border-0 fade-in-up" style={{'--bs-animation-delay': '0.1s'}}>
-            <Card.Body className="text-center p-4">
+            <Card.Body className="text-center p-4 d-flex flex-column">
               <div className="mb-4">
-                <div className="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style={{width: '80px', height: '80px'}}>
-                  <i className="bi bi-file-earmark-plus text-primary" style={{fontSize: '2rem'}}></i>
+                <div className="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" style={{width: '80px', height: '80px'}}>
+                  <i className="bi bi-file-earmark-plus text-white" style={{fontSize: '2rem'}}></i>
                 </div>
               </div>
               <Card.Title className="h4 mb-3 fw-bold">File New Complaint</Card.Title>
-              <Card.Text className="text-muted mb-4 px-3">
+              <Card.Text className="text-muted mb-4 px-3 flex-grow-1">
                 Report issues with water supply, electricity, roads, sanitation, garbage collection, and more to your municipal department with ease.
               </Card.Text>
-              <Button as={Link} to="/new-complaint" variant="primary" size="lg" className="px-4 py-2">
-                <i className="bi bi-plus-circle me-2"></i>
-                File Complaint
-              </Button>
+              <div className="mt-auto">
+                <Button as={Link} to="/new-complaint" variant="primary" size="lg" className="px-4 py-2">
+                  <i className="bi bi-plus-circle me-2"></i>
+                  File Complaint
+                </Button>
+              </div>
             </Card.Body>
           </Card>
         </Col>
 
         <Col md={6}>
           <Card className="hover-card h-100 border-0 fade-in-up" style={{'--bs-animation-delay': '0.2s'}}>
-            <Card.Body className="text-center p-4">
+            <Card.Body className="text-center p-4 d-flex flex-column">
               <div className="mb-4">
-                <div className="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style={{width: '80px', height: '80px'}}>
-                  <i className="bi bi-clock-history text-success" style={{fontSize: '2rem'}}></i>
+                <div className="bg-success rounded-circle d-inline-flex align-items-center justify-content-center" style={{width: '80px', height: '80px'}}>
+                  <i className="bi bi-clock-history text-white" style={{fontSize: '2rem'}}></i>
                 </div>
               </div>
               <Card.Title className="h4 mb-3 fw-bold">View Complaint History</Card.Title>
-              <Card.Text className="text-muted mb-4 px-3">
+              <Card.Text className="text-muted mb-4 px-3 flex-grow-1">
                 Track the status of your filed complaints, view detailed reports, and resend them via WhatsApp or email.
               </Card.Text>
-              <Button as={Link} to="/complaint-history" variant="success" size="lg" className="px-4 py-2">
-                <i className="bi bi-list-ul me-2"></i>
-                View History
-              </Button>
+              <div className="mt-auto">
+                <Button as={Link} to="/complaint-history" variant="success" size="lg" className="px-4 py-2">
+                  <i className="bi bi-list-ul me-2"></i>
+                  View History
+                </Button>
+              </div>
             </Card.Body>
           </Card>
         </Col>

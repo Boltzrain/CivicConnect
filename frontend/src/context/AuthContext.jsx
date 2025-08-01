@@ -22,14 +22,14 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = sessionStorage.getItem('token')
       if (token) {
         const userData = await authService.getCurrentUser()
         setUser(userData.user)
       }
     } catch (error) {
       console.error('Auth check failed:', error)
-      localStorage.removeItem('token')
+      sessionStorage.removeItem('token')
     } finally {
       setLoading(false)
     }
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.login(email, password)
       
       if (response.success) {
-        localStorage.setItem('token', response.token)
+        sessionStorage.setItem('token', response.token)
         setUser(response.user)
         return { success: true }
       } else {
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.register(name, email, password)
       
       if (response.success) {
-        localStorage.setItem('token', response.token)
+        sessionStorage.setItem('token', response.token)
         setUser(response.user)
         return { success: true }
       } else {
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   const logout = () => {
-    localStorage.removeItem('token')
+    sessionStorage.removeItem('token')
     setUser(null)
     setError('')
   }

@@ -151,7 +151,7 @@ h1, h2, h3, h4, h5, h6 {
 .auth-header {
   background: var(--gradient-primary);
   color: white;
-  padding: var(--space-2xl);
+  padding: var(--space-lg);
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -174,7 +174,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .auth-body {
-  padding: var(--space-2xl);
+  padding: var(--space-lg);
   background: white;
   position: relative;
 }
