@@ -6,6 +6,7 @@ A full-stack MERN (MongoDB, Express.js, React, Node.js) application that allows 
 
 ### User Management
 - **User Registration & Login**: Secure authentication system with JWT
+- **Session Management**: Session-based authentication (clears on browser close) 
 - **Password Hashing**: Secure password storage using bcrypt
 - **Form Validation**: Client-side and server-side validation
 - **Protected Routes**: Route protection for authenticated users
@@ -33,7 +34,8 @@ A full-stack MERN (MongoDB, Express.js, React, Node.js) application that allows 
 
 ### UI/UX Features
 - **Responsive Design**: Bootstrap 5 powered responsive interface
-- **Modern UI**: Clean, professional design with Bootstrap Icons
+- **Modern UI**: Clean, professional design with Bootstrap Icons and custom favicon
+- **Aligned Dashboard**: Perfectly aligned action cards with consistent button placement
 - **Real-time Feedback**: Loading states, success/error messages
 - **Modal Previews**: Preview complaint letters before sending
 - **Image Previews**: Preview uploaded images before submission
@@ -71,8 +73,6 @@ CivicConnect/
 │   │   ├── authController.js
 │   │   ├── complaintController.js
 │   │   └── departmentController.js
-│   ├── data/
-│   │   └── seedData.js
 │   ├── middleware/
 │   │   └── auth.js
 │   ├── models/
@@ -83,12 +83,11 @@ CivicConnect/
 │   │   ├── authRoutes.js
 │   │   ├── complaintRoutes.js
 │   │   └── departmentRoutes.js
-│   ├── scripts/
-│   │   └── seedDatabase.js
 │   ├── package.json
 │   └── server.js
 ├── frontend/
 │   ├── public/
+│   │   └── favicon.svg
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── Dashboard.jsx
@@ -139,13 +138,7 @@ CivicConnect/
    NODE_ENV=development
    ```
 
-4. **Seed the database with department data**
-   ```bash
-   # Populate MongoDB with municipal department data for 6 cities
-   npm run seed
-   ```
-
-5. **Start the backend server**
+4. **Start the backend server**
    ```bash
    # Development mode with auto-restart
    npm run dev
@@ -187,12 +180,32 @@ CivicConnect/
 2. Create a new cluster
 3. Get your connection string and update the `MONGODB_URI` in `.env`
 
+### Database Population
+
+**Important**: The application requires department data to be pre-populated in MongoDB. You'll need to manually add municipal department records to the `departments` collection with the following structure:
+
+```javascript
+{
+  city: "CityName",
+  issueType: "Water|Electricity|Road|Sanitation|etc",
+  name: "Department Name",
+  contactEmail: "contact@department.gov.in",
+  contactPhone: "+91-XXX-XXX-XXXX",
+  address: "Department Address",
+  website: "https://department.gov.in",
+  workingHours: "9:00 AM - 5:00 PM (Mon-Fri)",
+  isActive: true
+}
+```
+
 ## 📱 Usage Guide
 
 ### Getting Started
 1. **Register**: Create a new account with your name, email, and password
-2. **Login**: Sign in with your credentials
+2. **Login**: Sign in with your credentials (session persists until browser is closed)
 3. **Dashboard**: View your complaint statistics and recent activity
+
+**Note**: Authentication uses sessionStorage, so you'll remain logged in during your browser session but will need to log in again when you reopen the browser.
 
 ### Filing a Complaint
 1. **Navigate**: Go to "New Complaint" from the navigation menu
@@ -213,13 +226,12 @@ CivicConnect/
 5. **View Letter**: Click "Letter" to see the generated complaint text
 
 ### Supported Cities & Departments
-Database includes 60 departments across 6 major Indian cities:
-- **Mumbai**: All municipal departments with contact information (10 departments)
-- **Delhi**: Municipal corporations and specialized boards (10 departments)
-- **Bangalore**: BBMP and utility companies (10 departments)
-- **Chennai**: Chennai Corporation and state boards (10 departments)
-- **Kolkata**: KMC and West Bengal departments (10 departments)
-- **Bhubaneswar**: BMC and Odisha state departments (10 departments)
+**Note**: This application requires a pre-populated MongoDB database with municipal department data. The database should include departments for major Indian cities with their contact information, organized by city and issue type.
+
+The application supports multiple cities and issue types including:
+- **Issue Types**: Water, Electricity, Road, Sanitation, Street Lights, Garbage Collection, Public Transport, Parks, Noise Pollution
+- **Cities**: Major Indian cities like Mumbai, Delhi, Bangalore, Chennai, Kolkata, Bhubaneswar, and more
+- **Departments**: Municipal departments with contact details, working hours, and addresses
 
 ## 🌍 API Endpoints
 
@@ -256,15 +268,7 @@ DELETE /api/departments/:id               # Delete department (Admin)
 
 ### Adding New Cities and Departments
 
-#### Method 1: Using Database Seeding
-1. **Add to seed data**: Edit `backend/data/seedData.js` to include new city/department data
-2. **Run seeding script**: 
-   ```bash
-   cd backend
-   npm run seed
-   ```
-
-#### Method 2: Using API (Admin Access)
+#### Method 1: Using API (Admin Access)
 Create new departments via REST API:
 ```bash
 POST /api/departments
@@ -280,7 +284,7 @@ POST /api/departments
 }
 ```
 
-#### Method 3: Direct Database Insert
+#### Method 2: Direct Database Insert
 Connect to MongoDB and insert department documents directly:
 ```javascript
 db.departments.insertOne({
@@ -295,7 +299,8 @@ db.departments.insertOne({
 
 ## 🔒 Security Features
 
-- **JWT Authentication**: Secure token-based authentication
+- **JWT Authentication**: Secure token-based authentication with session storage
+- **Session Management**: Authentication tokens stored in sessionStorage (auto-clears on browser close)
 - **Password Hashing**: bcrypt with salt rounds for password security
 - **Input Validation**: Server-side validation using express-validator
 - **File Upload Security**: File type and size restrictions
@@ -343,6 +348,17 @@ For support, please email: support@civicconnect.com
 - MongoDB team for the excellent database solution
 - React team for the powerful frontend library
 - Express.js team for the robust backend framework
+
+## 📋 Recent Updates
+
+### Latest Changes
+- ✅ **Authentication**: Switched from localStorage to sessionStorage for better security
+- ✅ **UI/UX**: Improved dashboard card alignment and button positioning
+- ✅ **Icons**: Updated dashboard icons to white color with solid backgrounds
+- ✅ **Favicon**: Added custom CivicConnect favicon with civic theme
+- ✅ **Code Cleanup**: Removed seed files after database population
+- ✅ **Bug Fixes**: Fixed syntax errors and consistency issues
+- ✅ **Documentation**: Updated README to reflect all changes
 
 ---
 
