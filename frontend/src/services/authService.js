@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = '/api/auth'
+const API_URL = `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}/api/auth`
 
 // Create axios instance with default config
 const api = axios.create({
