@@ -141,6 +141,10 @@ const Register = () => {
                       />
                       <i className="bi bi-lock position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
                     </div>
+                    <div className="form-text small text-muted">
+                      <i className="bi bi-info-circle me-1"></i>
+                      Password must be at least 6 characters and contain uppercase, lowercase, and number
+                    </div>
                     <Form.Control.Feedback type="invalid">
                       Password must be at least 6 characters long.
                     </Form.Control.Feedback>
