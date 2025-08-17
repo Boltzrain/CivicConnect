@@ -201,7 +201,7 @@ CivicConnect/
 ## 📱 Usage Guide
 
 ### Getting Started
-1. **Register**: Create a new account with your name, email, and password
+1. **Register**: Create a new account with your name, email, and password(Password must contain an uppercase, a lowercase alphabet and number)
 2. **Login**: Sign in with your credentials (session persists until browser is closed)
 3. **Dashboard**: View your complaint statistics and recent activity
 
